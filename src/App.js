@@ -1,18 +1,18 @@
 
-import React,{useState,Component} from "react";
+import React,{Component} from "react";
 import './App.css';
 import { data } from "./data";
 import "@progress/kendo-theme-material/dist/all.css";
 import { Grid, GridColumn,GridDetailRow, GridToolbar } from "@progress/kendo-react-grid";
 import { process } from "@progress/kendo-data-query";
 import { ExcelExport } from '@progress/kendo-react-excel-export';
-const BooleanCell = (props) => {
-  return (
-    <td>{props.dataItem[props.field] ? '✅' : '❌'}</td>
-  )
-}
+// const BooleanCell = (props) => {
+//   return (
+//     <td>{props.dataItem[props.field] ? '✅' : '❌'}</td>
+//   )
+// }
 
-class App extends React.Component {
+class App extends Component {
   constructor(props) {
     super(props)
     const dataState = {
@@ -25,7 +25,8 @@ class App extends React.Component {
     this.state = {
       dataResult: process(data, dataState),
       dataState: dataState,
-      detail:[]
+      detail:[],
+      change:false,
     };
   }
   
@@ -45,44 +46,43 @@ class App extends React.Component {
 
 render(){
   return (
-    <div style={{width:"60%", height:"50%"}}>
-    <ExcelExport
-      data={data}
-      ref={(exporter) => { this._export = exporter; }}
-      >
+    <div style={{width:"100%", height:"50%"}}>
+     <div style={{width:"100%",height:"100px",backgroundColor:"yellow"}}>
+        <button onClick={()=>this.setState({change:!this.state.change})}>LİSTELE</button>
+     </div>
+      {
 
-                        
-      <Grid 
-      data={this.state.dataResult}
-      filterable={true}
-      pageable={true}
-      detail={DetailComponent}
-      onDataStateChange={this.onDataStateChange}
-      total={data.length}
-      expandField="expanded"
-        onExpandChange={this.expandChange}
-      {...this.state.dataState}>
-         <GridToolbar>
-         <button
-             title="Export to Excel"
-             className="k-button k-primary"
-             onClick={this.exportExcel}
-         >
-             Export to Excel
-         </button>&nbsp;
-     </GridToolbar>
-                                     
-                                  
-     <GridColumn  field="orderID" title="ID" />
-     <GridColumn field="customerID" />
-      <GridColumn field="orderDate"  />
-      <GridColumn field="shipName"  />
-      <GridColumn field="freight" />
-      <GridColumn field="shippedDate" />
-      <GridColumn field="employeeID" />
-      
-      </Grid>
-      </ExcelExport>
+        this.state.change?
+          <ExcelExport data={data}ref={(exporter) => { this._export = exporter; }}>  
+              <Grid 
+              data={this.state.dataResult}
+              filterable={true}
+              pageable={true}
+              detail={DetailComponent}
+              onDataStateChange={this.onDataStateChange}
+              total={data.length}
+              expandField="expanded"
+                onExpandChange={this.expandChange}
+              {...this.state.dataState}>
+                <GridToolbar>
+                <button title="Export to Excel" className="k-button k-primary" onClick={this.exportExcel}>
+                    Export to Excel
+                </button>&nbsp;
+            </GridToolbar>
+                                            
+                                          
+            <GridColumn  field="orderID" title="ID" />
+            <GridColumn field="customerID" />
+              <GridColumn field="orderDate"  />
+              <GridColumn field="shipName"  />
+              <GridColumn field="freight" />
+              <GridColumn field="shippedDate" />
+              <GridColumn field="employeeID" />
+              
+              </Grid>
+              </ExcelExport>
+              :null
+           }
       </div>
     );
   }
